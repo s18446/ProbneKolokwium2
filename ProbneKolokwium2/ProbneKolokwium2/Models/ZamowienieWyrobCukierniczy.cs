@@ -9,6 +9,8 @@ namespace ProbneKolokwium2.Models
     {
         public int Ilosc { get; set; }
         public string Uwagi { get; set; }
+        public int IdWyrobCukierniczy { get; set; }
+        public int IdZamowienie { get; set; }
         public virtual WyrobCukierniczy WyrobCukierniczy { get; set; }
         public virtual Zamowienie Zamowienie { get; set; }
     }
