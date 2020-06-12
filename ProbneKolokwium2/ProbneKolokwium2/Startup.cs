@@ -11,6 +11,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using ProbneKolokwium2.Models;
+using ProbneKolokwium2.Services;
 
 namespace ProbneKolokwium2
 {
@@ -26,10 +27,11 @@ namespace ProbneKolokwium2
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddScoped<ICukierniaDbService, EfCukierniaDbService>();
             services.AddDbContext<CukierniaDbContext>(options =>
             {
                 options.UseSqlServer("Data Source=db-mssql;Initial Catalog=s18446;Integrated Security=True");
-            });
+            });        
             services.AddControllers();
         }
 
