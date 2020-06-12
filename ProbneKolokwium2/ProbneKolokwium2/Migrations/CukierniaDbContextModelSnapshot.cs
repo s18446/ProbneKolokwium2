@@ -37,6 +37,20 @@ namespace ProbneKolokwium2.Migrations
                     b.HasKey("IdKlient");
 
                     b.ToTable("Klienci");
+
+                    b.HasData(
+                        new
+                        {
+                            IdKlient = 1,
+                            Imie = "Daniel",
+                            Nazwisko = "Rogowski"
+                        },
+                        new
+                        {
+                            IdKlient = 2,
+                            Imie = "Jan",
+                            Nazwisko = "Kowalski"
+                        });
                 });
 
             modelBuilder.Entity("ProbneKolokwium2.Models.Pracownik", b =>
@@ -57,6 +71,20 @@ namespace ProbneKolokwium2.Migrations
                     b.HasKey("IdPracownik");
 
                     b.ToTable("Pracownicy");
+
+                    b.HasData(
+                        new
+                        {
+                            IdPracownik = 1,
+                            Imie = "Tomasz",
+                            Nazwisko = "Nowak"
+                        },
+                        new
+                        {
+                            IdPracownik = 2,
+                            Imie = "Anna",
+                            Nazwisko = "Laskowska"
+                        });
                 });
 
             modelBuilder.Entity("ProbneKolokwium2.Models.WyrobCukierniczy", b =>
@@ -80,6 +108,22 @@ namespace ProbneKolokwium2.Migrations
                     b.HasKey("IdWyrobuCukierniczego");
 
                     b.ToTable("WyrobCukierniczy");
+
+                    b.HasData(
+                        new
+                        {
+                            IdWyrobuCukierniczego = 1,
+                            CenaZaSzt = 6f,
+                            Nazwa = "Ptys",
+                            Typ = "Przekaska"
+                        },
+                        new
+                        {
+                            IdWyrobuCukierniczego = 2,
+                            CenaZaSzt = 80f,
+                            Nazwa = "tort",
+                            Typ = "Ciasto"
+                        });
                 });
 
             modelBuilder.Entity("ProbneKolokwium2.Models.Zamowienie", b =>
@@ -101,23 +145,37 @@ namespace ProbneKolokwium2.Migrations
                     b.Property<int>("IdPracownik")
                         .HasColumnType("int");
 
-                    b.Property<int?>("KlientIdKlient")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("PracownikIdPracownik")
-                        .HasColumnType("int");
-
                     b.Property<string>("Uwagi")
                         .HasColumnType("nvarchar(300)")
                         .HasMaxLength(300);
 
                     b.HasKey("IdZamowienie");
 
-                    b.HasIndex("KlientIdKlient");
+                    b.HasIndex("IdKlient");
 
-                    b.HasIndex("PracownikIdPracownik");
+                    b.HasIndex("IdPracownik");
 
                     b.ToTable("Zamowienie");
+
+                    b.HasData(
+                        new
+                        {
+                            IdZamowienie = 1,
+                            DataPrzyjecia = new DateTime(2020, 6, 10, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            DataRealizacji = new DateTime(2020, 6, 12, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IdKlient = 1,
+                            IdPracownik = 2,
+                            Uwagi = "na urodziny"
+                        },
+                        new
+                        {
+                            IdZamowienie = 2,
+                            DataPrzyjecia = new DateTime(2020, 4, 11, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            DataRealizacji = new DateTime(2020, 4, 11, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IdKlient = 2,
+                            IdPracownik = 1,
+                            Uwagi = "No cos tam"
+                        });
                 });
 
             modelBuilder.Entity("ProbneKolokwium2.Models.ZamowienieWyrobCukierniczy", b =>
@@ -135,41 +193,57 @@ namespace ProbneKolokwium2.Migrations
                         .HasColumnType("nvarchar(300)")
                         .HasMaxLength(300);
 
-                    b.Property<int?>("WyrobCukierniczyIdWyrobuCukierniczego")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("ZamowienieIdZamowienie")
-                        .HasColumnType("int");
-
                     b.HasKey("IdWyrobCukierniczy", "IdZamowienie");
 
-                    b.HasIndex("WyrobCukierniczyIdWyrobuCukierniczego");
-
-                    b.HasIndex("ZamowienieIdZamowienie");
+                    b.HasIndex("IdZamowienie");
 
                     b.ToTable("ZamowienieWyrobCukierniczy");
+
+                    b.HasData(
+                        new
+                        {
+                            IdWyrobCukierniczy = 2,
+                            IdZamowienie = 1,
+                            Ilosc = 1,
+                            Uwagi = "na urodziny"
+                        },
+                        new
+                        {
+                            IdWyrobCukierniczy = 1,
+                            IdZamowienie = 2,
+                            Ilosc = 11,
+                            Uwagi = "jakies tam"
+                        });
                 });
 
             modelBuilder.Entity("ProbneKolokwium2.Models.Zamowienie", b =>
                 {
                     b.HasOne("ProbneKolokwium2.Models.Klient", "Klient")
                         .WithMany()
-                        .HasForeignKey("KlientIdKlient");
+                        .HasForeignKey("IdKlient")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("ProbneKolokwium2.Models.Pracownik", "Pracownik")
                         .WithMany()
-                        .HasForeignKey("PracownikIdPracownik");
+                        .HasForeignKey("IdPracownik")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("ProbneKolokwium2.Models.ZamowienieWyrobCukierniczy", b =>
                 {
                     b.HasOne("ProbneKolokwium2.Models.WyrobCukierniczy", "WyrobCukierniczy")
                         .WithMany()
-                        .HasForeignKey("WyrobCukierniczyIdWyrobuCukierniczego");
+                        .HasForeignKey("IdWyrobCukierniczy")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("ProbneKolokwium2.Models.Zamowienie", "Zamowienie")
                         .WithMany()
-                        .HasForeignKey("ZamowienieIdZamowienie");
+                        .HasForeignKey("IdZamowienie")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }

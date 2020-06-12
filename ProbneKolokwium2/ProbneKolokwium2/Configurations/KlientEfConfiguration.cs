@@ -18,7 +18,24 @@ namespace ProbneKolokwium2.Configurations
 
             builder.Property(e => e.Nazwisko).HasMaxLength(60);
 
-            
+            var list = new List<Klient>();
+
+            list.Add(new Klient
+            {
+                IdKlient = 1,
+                Imie = "Daniel",
+                Nazwisko = "Rogowski"
+            });
+
+            list.Add(new Klient
+            {
+                IdKlient = 2,
+                Imie = "Jan",
+                Nazwisko = "Kowalski"
+            });
+
+
+            builder.HasData(list);
         }
     }
 }

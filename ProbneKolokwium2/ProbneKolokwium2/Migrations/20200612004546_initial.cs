@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace ProbneKolokwium2.Migrations
 {
-    public partial class Initial : Migration
+    public partial class initial : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -60,25 +60,23 @@ namespace ProbneKolokwium2.Migrations
                     DataRealizacji = table.Column<DateTime>(nullable: false),
                     Uwagi = table.Column<string>(maxLength: 300, nullable: true),
                     IdKlient = table.Column<int>(nullable: false),
-                    IdPracownik = table.Column<int>(nullable: false),
-                    KlientIdKlient = table.Column<int>(nullable: true),
-                    PracownikIdPracownik = table.Column<int>(nullable: true)
+                    IdPracownik = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Zamowienie", x => x.IdZamowienie);
                     table.ForeignKey(
-                        name: "FK_Zamowienie_Klienci_KlientIdKlient",
-                        column: x => x.KlientIdKlient,
+                        name: "FK_Zamowienie_Klienci_IdKlient",
+                        column: x => x.IdKlient,
                         principalTable: "Klienci",
                         principalColumn: "IdKlient",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Zamowienie_Pracownicy_PracownikIdPracownik",
-                        column: x => x.PracownikIdPracownik,
+                        name: "FK_Zamowienie_Pracownicy_IdPracownik",
+                        column: x => x.IdPracownik,
                         principalTable: "Pracownicy",
                         principalColumn: "IdPracownik",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -88,46 +86,86 @@ namespace ProbneKolokwium2.Migrations
                     IdWyrobCukierniczy = table.Column<int>(nullable: false),
                     IdZamowienie = table.Column<int>(nullable: false),
                     Ilosc = table.Column<int>(nullable: false),
-                    Uwagi = table.Column<string>(maxLength: 300, nullable: true),
-                    WyrobCukierniczyIdWyrobuCukierniczego = table.Column<int>(nullable: true),
-                    ZamowienieIdZamowienie = table.Column<int>(nullable: true)
+                    Uwagi = table.Column<string>(maxLength: 300, nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_ZamowienieWyrobCukierniczy", x => new { x.IdWyrobCukierniczy, x.IdZamowienie });
                     table.ForeignKey(
-                        name: "FK_ZamowienieWyrobCukierniczy_WyrobCukierniczy_WyrobCukierniczyIdWyrobuCukierniczego",
-                        column: x => x.WyrobCukierniczyIdWyrobuCukierniczego,
+                        name: "FK_ZamowienieWyrobCukierniczy_WyrobCukierniczy_IdWyrobCukierniczy",
+                        column: x => x.IdWyrobCukierniczy,
                         principalTable: "WyrobCukierniczy",
                         principalColumn: "IdWyrobuCukierniczego",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_ZamowienieWyrobCukierniczy_Zamowienie_ZamowienieIdZamowienie",
-                        column: x => x.ZamowienieIdZamowienie,
+                        name: "FK_ZamowienieWyrobCukierniczy_Zamowienie_IdZamowienie",
+                        column: x => x.IdZamowienie,
                         principalTable: "Zamowienie",
                         principalColumn: "IdZamowienie",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
-            migrationBuilder.CreateIndex(
-                name: "IX_Zamowienie_KlientIdKlient",
+            migrationBuilder.InsertData(
+                table: "Klienci",
+                columns: new[] { "IdKlient", "Imie", "Nazwisko" },
+                values: new object[,]
+                {
+                    { 1, "Daniel", "Rogowski" },
+                    { 2, "Jan", "Kowalski" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Pracownicy",
+                columns: new[] { "IdPracownik", "Imie", "Nazwisko" },
+                values: new object[,]
+                {
+                    { 1, "Tomasz", "Nowak" },
+                    { 2, "Anna", "Laskowska" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "WyrobCukierniczy",
+                columns: new[] { "IdWyrobuCukierniczego", "CenaZaSzt", "Nazwa", "Typ" },
+                values: new object[,]
+                {
+                    { 1, 6f, "Ptys", "Przekaska" },
+                    { 2, 80f, "tort", "Ciasto" }
+                });
+
+            migrationBuilder.InsertData(
                 table: "Zamowienie",
-                column: "KlientIdKlient");
+                columns: new[] { "IdZamowienie", "DataPrzyjecia", "DataRealizacji", "IdKlient", "IdPracownik", "Uwagi" },
+                values: new object[] { 2, new DateTime(2020, 4, 11, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2020, 4, 11, 0, 0, 0, 0, DateTimeKind.Unspecified), 2, 1, "No cos tam" });
 
-            migrationBuilder.CreateIndex(
-                name: "IX_Zamowienie_PracownikIdPracownik",
+            migrationBuilder.InsertData(
                 table: "Zamowienie",
-                column: "PracownikIdPracownik");
+                columns: new[] { "IdZamowienie", "DataPrzyjecia", "DataRealizacji", "IdKlient", "IdPracownik", "Uwagi" },
+                values: new object[] { 1, new DateTime(2020, 6, 10, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2020, 6, 12, 0, 0, 0, 0, DateTimeKind.Unspecified), 1, 2, "na urodziny" });
+
+            migrationBuilder.InsertData(
+                table: "ZamowienieWyrobCukierniczy",
+                columns: new[] { "IdWyrobCukierniczy", "IdZamowienie", "Ilosc", "Uwagi" },
+                values: new object[] { 1, 2, 11, "jakies tam" });
+
+            migrationBuilder.InsertData(
+                table: "ZamowienieWyrobCukierniczy",
+                columns: new[] { "IdWyrobCukierniczy", "IdZamowienie", "Ilosc", "Uwagi" },
+                values: new object[] { 2, 1, 1, "na urodziny" });
 
             migrationBuilder.CreateIndex(
-                name: "IX_ZamowienieWyrobCukierniczy_WyrobCukierniczyIdWyrobuCukierniczego",
-                table: "ZamowienieWyrobCukierniczy",
-                column: "WyrobCukierniczyIdWyrobuCukierniczego");
+                name: "IX_Zamowienie_IdKlient",
+                table: "Zamowienie",
+                column: "IdKlient");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ZamowienieWyrobCukierniczy_ZamowienieIdZamowienie",
+                name: "IX_Zamowienie_IdPracownik",
+                table: "Zamowienie",
+                column: "IdPracownik");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ZamowienieWyrobCukierniczy_IdZamowienie",
                 table: "ZamowienieWyrobCukierniczy",
-                column: "ZamowienieIdZamowienie");
+                column: "IdZamowienie");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
